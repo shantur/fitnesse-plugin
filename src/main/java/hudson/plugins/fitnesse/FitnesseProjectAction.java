@@ -48,18 +48,6 @@ public class FitnesseProjectAction implements Action {
 	}
 
 	/**
-	 * Used in floatingBox.jelly
-	 */
-	public History getTrend() {
-		FitnesseResultsAction latestResults = getLatestResults();
-		if (latestResults == null) {
-			return null;
-		}
-		FitnesseResults result = latestResults.getResult();
-		return new History(result, 500, 200);
-	}
-
-	/**
 	 * Used in jobMain.jelly
 	 * {@see TestResultProjectAction#getLastTestResultAction()}
 	 */
@@ -84,7 +72,7 @@ public class FitnesseProjectAction implements Action {
 	/**
 	 * Display the test result trend.
 	 */
-	public void doTrend(StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+	public void doTrend(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
 		FitnesseResultsAction a = getLatestResults();
 		if(a!=null)
 			a.doGraph(req,rsp);
@@ -95,7 +83,7 @@ public class FitnesseProjectAction implements Action {
 	/**
 	 * Generates the clickable map HTML fragment for {@link #doTrend(StaplerRequest, StaplerResponse)}.
 	 */
-	public void doTrendMap( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+	public void doTrendMap(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
 		FitnesseResultsAction a = getLatestResults();
 		if(a!=null)
 			a.doGraphMap(req,rsp);
