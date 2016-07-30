@@ -36,7 +36,7 @@
 	</profiles>
 
 	<artifactId>fitnesse</artifactId>
-	<version>1.16</version>
+	<version>1.16.1</version>
 	<packaging>hpi</packaging>
 	<name>Jenkins FitNesse plugin</name>
 	<url>http://wiki.jenkins-ci.org/display/HUDSON/Fitnesse+Plugin</url>
@@ -75,7 +75,7 @@
 			<plugin> 
 				<groupId>org.jenkins-ci.tools</groupId> 
 				<artifactId>maven-hpi-plugin</artifactId> 
-				<version>1.113</version> <!-- set last version -->
+				<version>1.119</version> <!-- set last version -->
 			</plugin> 
 		</plugins> 
 	</build> 

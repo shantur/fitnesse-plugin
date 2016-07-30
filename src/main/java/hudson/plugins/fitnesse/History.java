@@ -23,23 +23,10 @@
  */
 package hudson.plugins.fitnesse;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.tasks.test.Messages;
-import hudson.util.ChartUtil;
-import hudson.util.ColorPalette;
-import hudson.util.DataSetBuilder;
-import hudson.util.Graph;
-import hudson.util.ShiftedCategoryAxis;
-import hudson.util.StackedAreaRenderer2;
-
-import java.awt.Color;
-import java.awt.Paint;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import hudson.util.*;
 import jenkins.model.Jenkins;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -50,6 +37,11 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.StackedAreaRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleInsets;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * History of {@link hudson.tasks.test.TestObject} over time.
@@ -72,7 +64,7 @@ public class History {
 	}
 
 	public boolean historyAvailable() {
-		Iterator<?> builds = testObject.getOwner().getParent().getBuilds().iterator();
+		Iterator<?> builds = testObject.getRun().getParent().getBuilds().iterator();
 		if (!builds.hasNext()) {
 			return false;
 		} else {
@@ -83,7 +75,7 @@ public class History {
 
 	public List<FitnesseResults> getList() {
 		List<FitnesseResults> list = new ArrayList<FitnesseResults>();
-		for (AbstractBuild<?, ?> b : testObject.getOwner().getParent().getBuilds()) {
+		for (Run<?, ?> b : testObject.getRun().getParent().getBuilds()) {
 			if (b.isBuilding())
 				continue;
 			FitnesseResults o = (FitnesseResults) testObject.getResultInRun(b);
@@ -118,7 +110,7 @@ public class History {
 			}
 
 			protected String generateToolTip(ChartLabel label, int row, int column) {
-				return label.o.getOwner().getDisplayName() + " : " + label.o.getDurationString();
+				return label.o.getRun().getDisplayName() + " : " + label.o.getDurationString();
 			}
 		};
 	}
@@ -140,7 +132,7 @@ public class History {
 			}
 
 			protected String generateToolTip(ChartLabel label, int row, int column) {
-				String build = label.o.getOwner().getDisplayName() + " : ";
+				String build = label.o.getRun().getDisplayName() + " : ";
 				switch (row) {
 				case 0:
 					return String.valueOf(Messages.AbstractTestResultAction_skip(build, label.o.getSkipCount()));
@@ -157,7 +149,7 @@ public class History {
 		private final String yLabel;
 
 		protected GraphImpl(String yLabel) {
-			super(testObject.getOwner().getTimestamp(), graphWidth, graphHeight);
+			super(testObject.getRun().getTimestamp(), graphWidth, graphHeight);
 			this.yLabel = yLabel;
 		}
 
@@ -254,14 +246,14 @@ public class History {
 		}
 
 		private void generateUrl() {
-			AbstractBuild<?, ?> build = o.getOwner();
+			Run<?, ?> build = o.getRun();
 			String buildLink = build.getUrl();
 			String actionUrl = o.getTestResultAction().getUrlName();
 			this.url = Jenkins.getInstance().getRootUrlFromRequest() + buildLink + actionUrl + o.getUrl();
 		}
 
 		public int compareTo(ChartLabel that) {
-			return this.o.getOwner().number - that.o.getOwner().number;
+			return this.o.getRun().number - that.o.getRun().number;
 		}
 
 		@Override
@@ -284,12 +276,7 @@ public class History {
 
 		@Override
 		public String toString() {
-			String l = o.getOwner().getDisplayName();
-			String s = o.getOwner().getBuiltOnStr();
-			if (s != null)
-				l += ' ' + s;
-			return l;
-			//return o.getDisplayName() + " " + o.getOwner().getDisplayName();
+			return o.getDisplayName() + " " + o.getRun().getDisplayName();
 		}
 
 	}

@@ -1,17 +1,25 @@
 package hudson.plugins.fitnesse;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Action;
+import hudson.model.Job;
+import hudson.model.Run;
 import hudson.tasks.test.AbstractTestResultAction;
-
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.StaplerProxy;
 
+import java.util.ArrayList;
+import java.util.Collection;
 
-public class FitnesseResultsAction extends AbstractTestResultAction<FitnesseResultsAction> implements StaplerProxy {
+import static hudson.plugins.fitnesse.CompoundFitnesseResults.createFor;
+import static java.util.Arrays.asList;
+
+
+public class FitnesseResultsAction extends AbstractTestResultAction<FitnesseResultsAction> implements StaplerProxy, SimpleBuildStep.LastBuildAction {
 	private FitnesseResults results;
 
-	protected FitnesseResultsAction(AbstractBuild<?, ?> owner, FitnesseResults results) {
+	protected FitnesseResultsAction(Run<?, ?> owner, FitnesseResults results) {
 		this.results = results;
-		this.results.setOwner(owner);
+		this.results.setRun(owner);
 	}
 
 	@Override
@@ -71,5 +79,18 @@ public class FitnesseResultsAction extends AbstractTestResultAction<FitnesseResu
 	public String getSummary() {
 		return String.format("(%d pages: %d wrong or with exceptions, %d ignored)", getTotalCount(), getFailCount(),
 				getSkipCount());
+	}
+
+	@Override
+	public Collection<? extends Action> getProjectActions() {
+		Job<?,?> job = run.getParent();
+		Collection<Action> list = new ArrayList<Action>();
+		list.add(new FitnesseProjectAction(job));
+		list.add(new FitnesseHistoryAction(job));
+		return list;
+	}
+
+	public void mergeResults(FitnesseResults results) {
+		this.results = createFor(asList(this.results, results));
 	}
 }

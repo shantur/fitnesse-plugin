@@ -1,41 +1,32 @@
 package hudson.plugins.fitnesse;
 
+import com.google.common.collect.Ordering;
 import hudson.model.Action;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+import hudson.model.Job;
+import hudson.model.Run;
 import hudson.plugins.fitnesse.NativePageCounts.Counts;
-import hudson.util.RunList;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.kohsuke.stapler.StaplerProxy;
 
-import com.google.common.collect.Ordering;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class FitnesseHistoryAction implements StaplerProxy, Action {
-	private final AbstractProject<?, ?> project;
+
+	public final Job<?,?> job;
 
 	private List<FitnesseResults> builds;
 	private Map<String, List<String>> allPages;
 	private Set<String> allFiles;
 
-	public FitnesseHistoryAction(AbstractProject<?, ?> project) {
-		this.project = project;
+	public FitnesseHistoryAction(Job<?,?> job) {
+		this.job = job;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object getTarget() {
-		extractValues((RunList<AbstractBuild<?, ?>>) project.getBuilds());
-		return new FitnesseHistory(project, allFiles, allPages, builds);
+		extractValues((List<Run<?, ?>>) job.getBuilds());
+		return new FitnesseHistory(job, allFiles, allPages, builds);
 	}
 
 	@Override
@@ -53,12 +44,12 @@ public class FitnesseHistoryAction implements StaplerProxy, Action {
 		return "fitnesseHistory";
 	}
 
-	public void extractValues(List<AbstractBuild<?, ?>> projectBuilds) {
+	public void extractValues(List<Run<?, ?>> projectBuilds) {
 		builds = new ArrayList<FitnesseResults>();
 		allFiles = new HashSet<String>();
 		allPages = new HashMap<String, List<String>>();
 
-		for (AbstractBuild<?, ?> build : projectBuilds) {
+		for (Run<?, ?> build : projectBuilds) {
 			FitnesseResultsAction action = build.getAction(FitnesseResultsAction.class);
 			if (action != null) {
 				FitnesseResults result = action.getResult();
@@ -67,7 +58,7 @@ public class FitnesseHistoryAction implements StaplerProxy, Action {
 				{
 					FitnesseResults fakeResult = new FitnesseResults(new Counts("ALL", "", 0, 0, 0, 0, 0, "ALL"));
 					fakeResult.addChild(result);
-					fakeResult.setOwner(build);
+					fakeResult.setRun(build);
 					result = fakeResult;
 				}
 				builds.add(result);

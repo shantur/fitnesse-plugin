@@ -1,17 +1,16 @@
 package hudson.plugins.fitnesse;
 
-import hudson.model.AbstractProject;
+import hudson.model.Job;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.export.Exported;
-
 public class FitnesseHistory {
-	private AbstractProject<?, ?> owner;
+	private Job<?, ?> owner;
 
 	/** Files list */
 	private Set<String> files;
@@ -23,8 +22,8 @@ public class FitnesseHistory {
 	public final List<FitnesseResults> builds;
 
 
-	public FitnesseHistory(AbstractProject<?, ?> owner, Set<String> files, Map<String, List<String>> pages,
-			List<FitnesseResults> builds) {
+	public FitnesseHistory(Job<?, ?> owner, Set<String> files, Map<String, List<String>> pages,
+						   List<FitnesseResults> builds) {
 		this.owner = owner;
 		this.files = files;
 		this.pages = pages;
@@ -40,7 +39,7 @@ public class FitnesseHistory {
 		return this;
 	}
 
-	public AbstractProject<?, ?> getOwner() {
+	public Job<?, ?> getOwner() {
 		return owner;
 	}
 

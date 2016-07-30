@@ -2,23 +2,21 @@ package hudson.plugins.fitnesse;
 
 import hudson.model.ModelObject;
 import hudson.model.Result;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.fitnesse.NativePageCounts.Counts;
 import hudson.tasks.test.TabulatedResult;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
+import jenkins.model.Jenkins;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import jenkins.model.Jenkins;
-
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.export.Exported;
 
 public class FitnesseResults extends TabulatedResult implements
 		Comparable<FitnesseResults> {
@@ -34,7 +32,7 @@ public class FitnesseResults extends TabulatedResult implements
 	private Counts pageCounts;
 	private FitnesseResults parent;
 	private List<FitnesseResults> details = new ArrayList<FitnesseResults>();
-	private AbstractBuild<?, ?> owner;
+	private Run<?, ?> owner;
 
 	public FitnesseResults(Counts pageCounts) {
 		this.pageCounts = pageCounts;
@@ -77,16 +75,21 @@ public class FitnesseResults extends TabulatedResult implements
 		return (match.size() == 0 ? null : match.get(0));
 	}
 
-	public void setOwner(AbstractBuild<?, ?> build) {
+	@Deprecated
+	public void setOwner(Run<?, ?> build) {
+		this.owner = build;
+	}
+
+	public void setRun(Run<?, ?> build) {
 		this.owner = build;
 	}
 
 	@Override
-	public AbstractBuild<?, ?> getOwner() {
+	public Run<?, ?> getRun() {
 		if (owner != null)
 			return owner;
 		if (parent != null)
-			return parent.getOwner();
+			return parent.getRun();
 		return null;
 	}
 
@@ -242,7 +245,7 @@ public class FitnesseResults extends TabulatedResult implements
 	 */
 	@Override
 	public FitnesseResultsAction getParentAction() {
-		FitnesseResultsAction action = getOwner().getAction(
+		FitnesseResultsAction action = getRun().getAction(
 				FitnesseResultsAction.class);
 		return action;
 	}
@@ -313,7 +316,7 @@ public class FitnesseResults extends TabulatedResult implements
 	 * referenced in body.jelly
 	 */
 	public String toHtml(FitnesseResults results) {
-		FitnesseBuildAction buildAction = getOwner().getAction(
+		FitnesseBuildAction buildAction = getRun().getAction(
 				FitnesseBuildAction.class);
 		if (buildAction == null) {
 			buildAction = FitnesseBuildAction.NULL_ACTION;
@@ -339,7 +342,7 @@ public class FitnesseResults extends TabulatedResult implements
 	 * server. Note the history may not always be available.
 	 */
 	public String getDetailRemoteLink() {
-		FitnesseBuildAction buildAction = getOwner().getAction(
+		FitnesseBuildAction buildAction = getRun().getAction(
 				FitnesseBuildAction.class);
 		if (buildAction == null) {
 			buildAction = FitnesseBuildAction.NULL_ACTION;

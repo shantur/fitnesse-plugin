@@ -1,6 +1,7 @@
 package hudson.plugins.fitnesse;
 
 import hudson.FilePath;
+import hudson.model.*;
 import hudson.tasks.test.TestResult;
 
 import java.io.File;
@@ -9,6 +10,8 @@ import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.mockito.Mockito.mock;
 
 public class FitnesseResultsRecorderTest {
 
