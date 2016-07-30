@@ -3,6 +3,12 @@ package hudson.plugins.fitnesse;
 import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.Run;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class FitnesseProjectAction implements Action {
 
@@ -73,5 +79,27 @@ public class FitnesseProjectAction implements Action {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Display the test result trend.
+	 */
+	public void doTrend(StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+		FitnesseResultsAction a = getLatestResults();
+		if(a!=null)
+			a.doGraph(req,rsp);
+		else
+			rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	}
+
+	/**
+	 * Generates the clickable map HTML fragment for {@link #doTrend(StaplerRequest, StaplerResponse)}.
+	 */
+	public void doTrendMap( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+		FitnesseResultsAction a = getLatestResults();
+		if(a!=null)
+			a.doGraphMap(req,rsp);
+		else
+			rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 	}
 }
