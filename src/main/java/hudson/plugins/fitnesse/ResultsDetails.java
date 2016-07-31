@@ -1,10 +1,11 @@
 package hudson.plugins.fitnesse;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.fitnesse.NativePageCounts.Counts;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
+import org.kohsuke.stapler.export.Exported;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,9 +13,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.kohsuke.stapler.export.Exported;
-
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 
 /**
  * Represents the details of a FitNesseResults instance, i.e. the FitNesse html output.
@@ -49,8 +48,8 @@ public class ResultsDetails extends TestResult {
 	}
 
 	@Override
-	public AbstractBuild<?, ?> getOwner() {
-		return parentResults.getOwner();
+	public Run<?, ?> getRun() {
+		return parentResults.getRun();
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class FitnesseResultsRecorder extends Recorder implements SimpleBuildStep {
@@ -39,6 +40,14 @@ public class FitnesseResultsRecorder extends Recorder implements SimpleBuildStep
 	 */
 	public String getFitnessePathToXmlResultsIn() {
 		return fitnessePathToXmlResultsIn;
+	}
+
+	/**
+	 * {@link Recorder}
+	 */
+	@Override
+	public Collection<Action> getProjectActions(AbstractProject<?, ?> project) {
+		return new ArrayList<Action>();
 	}
 
 	/**
@@ -81,7 +90,7 @@ public class FitnesseResultsRecorder extends Recorder implements SimpleBuildStep
                 action = new FitnesseResultsAction(run, results);
                 run.addAction(action);
             } else {
-                action.mergeResults(results);
+                action.mergeResults(run, results);
                 run.save();
             }
         }

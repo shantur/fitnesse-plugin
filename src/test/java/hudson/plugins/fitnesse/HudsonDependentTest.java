@@ -12,9 +12,9 @@ public class HudsonDependentTest extends HudsonTestCase {
 	public void testOwnerOfParentResultsShouldBeOwnerOfChildResults() throws Exception {
 		FitnesseResults parent = new FitnesseResults((Counts) null);
 		FitnesseResults child = new FitnesseResults((Counts) null);
-		parent.setOwner(new FreeStyleBuild(createFreeStyleProject(getName())));
+		parent.setRun(new FreeStyleBuild(createFreeStyleProject(getName())));
 		parent.addChild(child);
-		assertSame(parent.getOwner(), child.getOwner());
+		assertSame(parent.getRun(), child.getRun());
 	}
 
 	//	public void testBuildStartingFitnesseWithAbsoluteAndRelativePaths() throws Exception {

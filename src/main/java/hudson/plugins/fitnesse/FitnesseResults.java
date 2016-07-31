@@ -75,11 +75,6 @@ public class FitnesseResults extends TabulatedResult implements
 		return (match.size() == 0 ? null : match.get(0));
 	}
 
-	@Deprecated
-	public void setOwner(Run<?, ?> build) {
-		this.owner = build;
-	}
-
 	public void setRun(Run<?, ?> build) {
 		this.owner = build;
 	}

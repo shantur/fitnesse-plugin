@@ -90,7 +90,9 @@ public class FitnesseResultsAction extends AbstractTestResultAction<FitnesseResu
 		return list;
 	}
 
-	public void mergeResults(FitnesseResults results) {
+	public void mergeResults(Run<?, ?> run, FitnesseResults results) {
+		results.setRun(run);
 		this.results = createFor(asList(this.results, results));
+		this.results.setRun(run);
 	}
 }
