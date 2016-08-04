@@ -1,0 +1,29 @@
+plugins {
+    id "org.jenkins-ci.jpi" version "0.18.1"
+}
+
+apply plugin: 'java'
+
+group = "org.jenkins-ci.plugins"
+version = "1.16.1"
+description = "Jenkins FitNesse plugin"
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'http://repo.jenkins-ci.org/public/' }
+}
+
+jenkinsPlugin {
+    coreVersion = "1.609.3"                                              // Version of Jenkins core this plugin depends on.
+    displayName = "Jenkins FitNesse plugin"                             // Human-readable name of plugin.
+    url = "http://wiki.jenkins-ci.org/display/HUDSON/Fitnesse+Plugin"   // URL for plugin on Jenkins wiki or elsewhere.
+    shortName = "fitnesse"                                              // Plugin ID, defaults to the project name without trailing '-plugin'
+}
+
+dependencies {
+    jenkinsPlugins 'org.jenkins-ci.plugins:junit:1.3@jar'
+
+    testCompile 'org.mockito:mockito-core:1.9.5'
+    testCompile 'org.hamcrest:hamcrest-core:1.3'
+}

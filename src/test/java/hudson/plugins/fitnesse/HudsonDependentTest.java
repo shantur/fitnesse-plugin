@@ -1,18 +1,25 @@
 package hudson.plugins.fitnesse;
 
 import hudson.model.FreeStyleBuild;
-import hudson.model.Result;
 import hudson.model.FreeStyleProject;
+import hudson.model.Result;
 import hudson.plugins.fitnesse.NativePageCounts.Counts;
+import org.junit.Rule;
+import org.junit.Test;
+import org.jvnet.hudson.test.JenkinsRule;
 
-import org.jvnet.hudson.test.HudsonTestCase;
+import static org.junit.Assert.*;
 
-public class HudsonDependentTest extends HudsonTestCase {
+public class HudsonDependentTest {
 
+	@Rule
+	public JenkinsRule jenkinsRule = new JenkinsRule();
+
+	@Test
 	public void testOwnerOfParentResultsShouldBeOwnerOfChildResults() throws Exception {
 		FitnesseResults parent = new FitnesseResults((Counts) null);
 		FitnesseResults child = new FitnesseResults((Counts) null);
-		parent.setRun(new FreeStyleBuild(createFreeStyleProject(getName())));
+		parent.setRun(new FreeStyleBuild(jenkinsRule.createFreeStyleProject(getName())));
 		parent.addChild(child);
 		assertSame(parent.getRun(), child.getRun());
 	}
@@ -151,8 +158,9 @@ public class HudsonDependentTest extends HudsonTestCase {
 	//		Assert.assertEquals(4, resultsAction.getResult().getFailCount());
 	//	}
 
+	@Test
 	public void testBuildWithoutResults() throws Exception {
-		FreeStyleProject project = createFreeStyleProject(getName());
+		FreeStyleProject project = jenkinsRule.createFreeStyleProject(getName());
 		project.getBuildersList().clear();
 		project.getPublishersList().clear();
 		String resultsFile = "fitnesse-results-inexistant.xml";
@@ -162,5 +170,9 @@ public class HudsonDependentTest extends HudsonTestCase {
 		assertTrue(build.getLogFile().getAbsolutePath(), Result.FAILURE.equals(build.getResult()));
 		FitnesseResultsAction resultsAction = build.getAction(FitnesseResultsAction.class);
 		assertNull(resultsAction);
+	}
+
+	private String getName() {
+		return getClass().getSimpleName();
 	}
 }

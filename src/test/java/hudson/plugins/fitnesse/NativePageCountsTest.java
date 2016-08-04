@@ -42,14 +42,14 @@ public class NativePageCountsTest {
 
 	@Test
 	public void resultsDateOfShouldStripAnyTrailingGooFromApproxDate() {
-		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./target/");
+		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./build/");
 		Assert.assertEquals("abc", results.resultsDateOf("abc&amp;"));
 		Assert.assertEquals("abc", results.resultsDateOf("abc"));
 	}
 
 	@Test
 	public void resultsShouldCollectSummaryFromAttributes() {
-		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./target/");
+		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./build/");
 		AttributesImpl attributes = new AttributesImpl();
 		addSummaryAttributes(attributes, "1", "2", "3", "4", "5");
 		results.startElement("", "", NativePageCounts.SUMMARY, attributes);
@@ -78,7 +78,7 @@ public class NativePageCountsTest {
 
 	@Test
 	public void resultsShouldCollectDetailFromAttributes() {
-		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./target/");
+		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./build/");
 		AttributesImpl attributes = new AttributesImpl();
 		attributes.addAttribute("", "", NativePageCounts.PAGE, "String", "name");
 		String resultsDate = "20100311210804";
@@ -94,7 +94,7 @@ public class NativePageCountsTest {
 		Assert.assertEquals(7, results.getDetails().get(0).ignored);
 		Assert.assertEquals(8, results.getDetails().get(0).exceptions);
 		Assert.assertEquals(9, results.getDetails().get(0).duration);
-		Assert.assertEquals("./target/name", results.getDetails().get(0).contentFile);
+		Assert.assertEquals("./build/name", results.getDetails().get(0).contentFile);
 	}
 
 	private void addDetailAttributes(AttributesImpl attributes, String resultsDate) {
@@ -109,7 +109,7 @@ public class NativePageCountsTest {
 
 	@Test
 	public void resultsOfTestShouldCollectSummaryFromDetail() {
-		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./target/");
+		NativePageCounts results = new NativePageCounts(System.out, "testResult.xml", "./build/");
 		AttributesImpl attributes = new AttributesImpl();
 		attributes.addAttribute("", "", NativePageCounts.PAGE, "String", "name");
 		String resultsDate = "20100311210804";

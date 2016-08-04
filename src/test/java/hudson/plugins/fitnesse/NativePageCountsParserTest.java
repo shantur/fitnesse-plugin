@@ -60,7 +60,7 @@ public class NativePageCountsParserTest {
 	public void parserShouldCollectFinalCounts() throws Exception {
 		NativePageCounts testResults = fitnesseParser.parse(
 				toInputStream(RESULTS), "testResult.xml", System.out,
-				"./target/");
+				"./build/");
 		Assert.assertEquals(2, testResults.size());
 		Assert.assertEquals("testResult.xml", testResults.getSummary().page);
 		Assert.assertEquals(5, testResults.getSummary().right);
@@ -73,7 +73,7 @@ public class NativePageCountsParserTest {
 	public void parserShouldCollectContents() throws Exception {
 		NativePageCounts testResults = fitnesseParser.parse(
 				toInputStream(RESULTS), "testResult.xml", System.out,
-				"./target/");
+				"./build/");
 		Assert.assertEquals(2, testResults.size());
 		Assert.assertEquals("testResult.xml", testResults.getSummary().page);
 		Assert.assertEquals(1, testResults.getDetails().size());
@@ -84,7 +84,7 @@ public class NativePageCountsParserTest {
 		InputStream sampleXml = getClass().getResourceAsStream(
 				"fitnesse-suite-results.xml");
 		NativePageCounts testResults = fitnesseParser.parse(sampleXml,
-				"testResult.xml", System.out, "./target/");
+				"testResult.xml", System.out, "./build/");
 		Assert.assertEquals(15, testResults.size());
 		Assert.assertEquals("testResult.xml", testResults.getSummary().page);
 		Assert.assertEquals(6, testResults.getSummary().right);
@@ -100,7 +100,7 @@ public class NativePageCountsParserTest {
 		InputStream sampleXml = getClass().getResourceAsStream(
 				"fitnesse-test-results.xml");
 		NativePageCounts testResults = fitnesseParser.parse(sampleXml,
-				"testResult.xml", System.out, "./target/");
+				"testResult.xml", System.out, "./build/");
 		Assert.assertEquals(2, testResults.size());
 		Assert.assertEquals("TestDecisionTable", testResults.getSummary().page);
 		Assert.assertEquals(16, testResults.getSummary().right);
