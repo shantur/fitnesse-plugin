@@ -1,3 +1,7 @@
+import java.nio.charset.StandardCharsets
+
+import static java.nio.charset.StandardCharsets.UTF_8
+
 plugins {
     id "org.jenkins-ci.jpi" version "0.18.1"
 }
@@ -15,7 +19,7 @@ repositories {
 }
 
 jenkinsPlugin {
-    coreVersion = "1.609.3"                                              // Version of Jenkins core this plugin depends on.
+    coreVersion = "1.609.3"                                             // Version of Jenkins core this plugin depends on.
     displayName = "Jenkins FitNesse plugin"                             // Human-readable name of plugin.
     url = "http://wiki.jenkins-ci.org/display/HUDSON/Fitnesse+Plugin"   // URL for plugin on Jenkins wiki or elsewhere.
     shortName = "fitnesse"                                              // Plugin ID, defaults to the project name without trailing '-plugin'
@@ -26,4 +30,16 @@ dependencies {
 
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.hamcrest:hamcrest-core:1.3'
+}
+
+compileJava {
+    options.encoding = UTF_8
+    sourceCompatibility = '1.6'
+    targetCompatibility = '1.6'
+}
+
+compileTestJava {
+    options.encoding = UTF_8
+    sourceCompatibility = '1.6'
+    targetCompatibility = '1.6'
 }
