@@ -1,8 +1,7 @@
 package hudson.plugins.fitnesse;
 
 import hudson.EnvVars;
-import hudson.model.AbstractBuild;
-import hudson.model.Node;
+import hudson.model.*;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.util.DescribableList;
 
@@ -25,7 +24,7 @@ public class FitnesseBuilderTest {
 
 		final String expectedJavaHome = "jdk1.6.0_18";
 		options.put(FitnesseBuilder.FITNESSE_JDK, expectedJavaHome);
-		Assert.assertEquals(expectedJavaHome, builder.getFitnesseJdk());
+		assertEquals(expectedJavaHome, builder.getFitnesseJdk());
 	}
 
 	@Test
@@ -34,7 +33,7 @@ public class FitnesseBuilderTest {
 		FitnesseBuilder builder = new FitnesseBuilder(options);
 
 		String expectedJavaHome = "";
-		Assert.assertEquals(expectedJavaHome, builder.getFitnesseJdk());
+		assertEquals(expectedJavaHome, builder.getFitnesseJdk());
 	}
 
 	@Test
@@ -43,13 +42,13 @@ public class FitnesseBuilderTest {
 		FitnesseBuilder builder = new FitnesseBuilder(options);
 
 		options.put(FitnesseBuilder.FITNESSE_PORT_LOCAL, "99");
-		Assert.assertEquals("99", builder.getFitnessePort());
+		assertEquals("99", builder.getFitnessePort());
 
 		options.put(FitnesseBuilder.FITNESSE_PORT_REMOTE, null);
-		Assert.assertEquals("99", builder.getFitnessePort());
+		assertEquals("99", builder.getFitnessePort());
 
 		options.put(FitnesseBuilder.FITNESSE_PORT_REMOTE, "");
-		Assert.assertEquals("99", builder.getFitnessePort());
+		assertEquals("99", builder.getFitnessePort());
 	}
 
 
@@ -59,13 +58,13 @@ public class FitnesseBuilderTest {
 		FitnesseBuilder builder = new FitnesseBuilder(options);
 
 		options.put(FitnesseBuilder.FITNESSE_PORT_REMOTE, "999");
-		Assert.assertEquals("999", builder.getFitnessePort());
+		assertEquals("999", builder.getFitnessePort());
 
 		options.put(FitnesseBuilder.FITNESSE_PORT_LOCAL, null);
-		Assert.assertEquals("999", builder.getFitnessePort());
+		assertEquals("999", builder.getFitnessePort());
 
 		options.put(FitnesseBuilder.FITNESSE_PORT_LOCAL, "");
-		Assert.assertEquals("999", builder.getFitnessePort());
+		assertEquals("999", builder.getFitnessePort());
 	}
 
 
@@ -78,7 +77,7 @@ public class FitnesseBuilderTest {
 		envVars.put("PORT", "99");
 		options.put(FitnesseBuilder.FITNESSE_PORT_REMOTE, "$PORT");
 
-		Assert.assertEquals(99, builder.getFitnessePort(envVars));
+		assertEquals(99, builder.getFitnessePort(envVars));
 	}
 
 	@Test
@@ -88,10 +87,10 @@ public class FitnesseBuilderTest {
 
 		options.put(FitnesseBuilder.START_FITNESSE, "True");
 		Assert.assertTrue(builder.getFitnesseStart());
-		Assert.assertEquals("localhost", builder.getFitnesseHost());
+		assertEquals("localhost", builder.getFitnesseHost());
 
 		options.put(FitnesseBuilder.FITNESSE_HOST, "abracadabra");
-		Assert.assertEquals("localhost", builder.getFitnesseHost());
+		assertEquals("localhost", builder.getFitnesseHost());
 	}
 
 	@Test
@@ -102,10 +101,10 @@ public class FitnesseBuilderTest {
 		options.put(FitnesseBuilder.START_FITNESSE, "False");
 		options.put(FitnesseBuilder.FITNESSE_HOST, "hudson.local");
 		Assert.assertFalse(builder.getFitnesseStart());
-		Assert.assertEquals("hudson.local", builder.getFitnesseHost());
+		assertEquals("hudson.local", builder.getFitnesseHost());
 
 		options.put(FitnesseBuilder.FITNESSE_HOST, "abracadabra");
-		Assert.assertEquals("abracadabra", builder.getFitnesseHost());
+		assertEquals("abracadabra", builder.getFitnesseHost());
 	}
 
 	@Test
@@ -113,10 +112,10 @@ public class FitnesseBuilderTest {
 		HashMap<String, String> options = new HashMap<String, String>();
 		FitnesseBuilder builder = new FitnesseBuilder(options);
 
-		Assert.assertEquals("60000", builder.getFitnesseHttpTimeout());
+		assertEquals("60000", builder.getFitnesseHttpTimeout());
 
 		options.put(FitnesseBuilder.HTTP_TIMEOUT, "1000");
-		Assert.assertEquals("1000", builder.getFitnesseHttpTimeout());
+		assertEquals("1000", builder.getFitnesseHttpTimeout());
 	}
 
 	@Test
@@ -124,9 +123,9 @@ public class FitnesseBuilderTest {
 		HashMap<String, String> options = new HashMap<String, String>();
 		FitnesseBuilder builder = new FitnesseBuilder(options);
 
-		Assert.assertEquals(60000, builder.getFitnesseTestTimeout());
+		assertEquals(60000, builder.getFitnesseTestTimeout());
 		options.put(FitnesseBuilder.TEST_TIMEOUT, "1000");
-		Assert.assertEquals(1000, builder.getFitnesseTestTimeout());
+		assertEquals(1000, builder.getFitnesseTestTimeout());
 	}
 
 	@Test
@@ -137,10 +136,10 @@ public class FitnesseBuilderTest {
 		File tmpFile = File.createTempFile("fitnesse", ".jar");
 		options.put(FitnesseBuilder.PATH_TO_JAR, tmpFile.getAbsolutePath());
 
-		Assert.assertEquals(tmpFile.getParentFile().getAbsolutePath(), builder.getFitnesseJavaWorkingDirectory());
+		assertEquals(tmpFile.getParentFile().getAbsolutePath(), builder.getFitnesseJavaWorkingDirectory());
 
 		options.put(FitnesseBuilder.JAVA_WORKING_DIRECTORY, "/some/explicit/path");
-		Assert.assertEquals("/some/explicit/path", builder.getFitnesseJavaWorkingDirectory());
+		assertEquals("/some/explicit/path", builder.getFitnesseJavaWorkingDirectory());
 	}
 
 	@Test
@@ -151,7 +150,7 @@ public class FitnesseBuilderTest {
 		File tmpFile = new File("relativePath", "fitnesse.jar");
 		options.put(FitnesseBuilder.PATH_TO_JAR, tmpFile.getPath());
 
-		Assert.assertEquals("relativePath", builder.getFitnesseJavaWorkingDirectory());
+		assertEquals("relativePath", builder.getFitnesseJavaWorkingDirectory());
 	}
 
 	@Test
@@ -159,7 +158,7 @@ public class FitnesseBuilderTest {
 		HashMap<String, String> options = new HashMap<String, String>();
 		FitnesseBuilder builder = new FitnesseBuilder(options);
 
-		Assert.assertEquals("", builder.getFitnesseJavaWorkingDirectory());
+		assertEquals("", builder.getFitnesseJavaWorkingDirectory());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -167,11 +166,15 @@ public class FitnesseBuilderTest {
 	public void getFitnesseHostShouldNotThrowANullPointerWhenNodePropertyIsNull() throws InterruptedException,
 			IOException {
 
-		AbstractBuild build = Mockito.mock(AbstractBuild.class);
-		Node node = Mockito.mock(Node.class);
-		when(build.getBuiltOn()).thenReturn(node);
+		Run build = mock(Run.class);
+        Executor executor = mock(Executor.class);
+        when(build.getExecutor()).thenReturn(executor);
+        Computer computer = mock(Computer.class);
+        when(executor.getOwner()).thenReturn(computer);
+		Node node = mock(Node.class);
+		when(computer.getNode()).thenReturn(node);
 
-		DescribableList describableList = Mockito.mock(DescribableList.class);
+		DescribableList describableList = mock(DescribableList.class);
 		when(node.getNodeProperties()).thenReturn(describableList);
 		when(describableList.get(EnvironmentVariablesNodeProperty.class)).thenReturn(null);
 

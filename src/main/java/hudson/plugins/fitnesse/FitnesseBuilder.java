@@ -1,31 +1,23 @@
 package hudson.plugins.fitnesse;
 
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.Launcher;
-import hudson.Util;
-import hudson.model.BuildListener;
-import hudson.model.ModelObject;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Descriptor;
+import hudson.*;
+import hudson.model.*;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import jenkins.tasks.SimpleBuildStep;
+import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
+import javax.annotation.Nonnull;
+import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.ServletException;
-
-import net.sf.json.JSONObject;
-
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Execute fitnesse tests, either by starting a new fitnesse instance or by
@@ -33,7 +25,7 @@ import org.kohsuke.stapler.StaplerRequest;
  *
  * @author Tim Bacon
  */
-public class FitnesseBuilder extends Builder {
+public class FitnesseBuilder extends Builder implements SimpleBuildStep {
 
 	public static final String START_FITNESSE = "fitnesseStart";
 	public static final String FITNESSE_HOST = "fitnesseHost";
@@ -113,9 +105,9 @@ public class FitnesseBuilder extends Builder {
 		}
 	}
 
-	public String getFitnesseHost(AbstractBuild<?, ?> build, EnvVars environment) {
+	public String getFitnesseHost(Run<?, ?> run , EnvVars environment) {
 		if (getFitnesseStart()) {
-			EnvironmentVariablesNodeProperty prop = build.getBuiltOn().getNodeProperties().get(EnvironmentVariablesNodeProperty.class);
+			EnvironmentVariablesNodeProperty prop = getEnvironmentVariablesCurrentNodeProperty(run);
 			if (prop != null && prop.getEnvVars() != null && prop.getEnvVars().get(_HOSTNAME_SLAVE_PROPERTY) != null) {
 				return prop.getEnvVars().get(_HOSTNAME_SLAVE_PROPERTY);
 			} else {
@@ -123,6 +115,27 @@ public class FitnesseBuilder extends Builder {
 			}
 		} else
 			return getOption(FITNESSE_HOST, "unknown_host", environment);
+	}
+
+	public EnvironmentVariablesNodeProperty getEnvironmentVariablesCurrentNodeProperty(Run<?, ?> run) {
+		Node node = getCurrentNode(run);
+		if(node == null) {
+			return null;
+		}
+		return node.getNodeProperties().get(EnvironmentVariablesNodeProperty.class);
+	}
+
+	/**
+	 * Returns the current {@link Node} on which we are building.
+	 * @return Returns the current {@link Node} or {@literal null} if could not determined.
+	 */
+	public final @Nonnull Node getCurrentNode(Run<?, ?> run) throws IllegalStateException {
+		Executor exec = run.getExecutor();
+		if (exec == null) {
+			return null;
+		}
+		Computer c = exec.getOwner();
+		return c.getNode();
 	}
 
 	/**
@@ -260,14 +273,13 @@ public class FitnesseBuilder extends Builder {
 	}
 
 	/**
-	 * {@link Builder}
+	 * {@link SimpleBuildStep}
 	 */
 	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws IOException,
-			InterruptedException {
+	public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
 		listener.getLogger().println(getClass().getName() + ": " + options);
-		FitnesseExecutor fitnesseExecutor = new FitnesseExecutor(this, listener, build.getEnvironment(listener));
-		return fitnesseExecutor.execute(launcher, build);
+		FitnesseExecutor fitnesseExecutor = new FitnesseExecutor(this, listener, run.getEnvironment(listener));
+		fitnesseExecutor.execute(launcher, run, workspace);
 	}
 
 	/**
