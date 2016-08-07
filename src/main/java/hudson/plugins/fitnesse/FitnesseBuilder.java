@@ -56,6 +56,10 @@ public class FitnesseBuilder extends Builder implements SimpleBuildStep {
 		this.options = options;
 	}
 
+	public Map<String, String> getOptions() {
+		return options;
+	}
+
 	private String getOption(String key, String valueIfKeyNotFound) {
 		if (options.containsKey(key)) {
 			String value = options.get(key);
